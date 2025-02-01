@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  NetworkStack:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: 'https://clouformation-nested-stack-sample-bucket-16012025.s3.us-east-1.amazonaws.com/network-stack.yaml' ##Predefined String
+      Parameters:
+
+  EC2Stack:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: 'https://clouformation-nested-stack-sample-bucket-16012025.s3.us-east-1.amazonaws.com/ec2-stack.yaml' ##Predefined String
+      Parameters:
+        SubnetId: !GetAtt NetworkStack.Outputs.MySubnetId
+        KeyName: 'my-KeyPair-v2'
+      
+  WebAppStack:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: 'https://clouformation-nested-stack-sample-bucket-16012025.s3.us-east-1.amazonaws.com/webapp-stack.yaml' ##Predefined String
+      Parameters:
+      Parameters:
+        VPCId: !GetAtt NetworkStack.Outputs.MyVPCId
+        SubnetId: !GetAtt NetworkStack.Outputs.MySubnetId
