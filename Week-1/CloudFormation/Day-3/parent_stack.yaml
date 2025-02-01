@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  VPCStack:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: ./lct-child-template/lct-vpc-template.yaml
+      Parameters:
+        VPCName: !Ref VPCName
+
+  WebAppStack:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: ./lct-child-template/lct-webapp-template.yaml
+      Parameters:
+        InstanceType: !Ref InstanceType
+        # KeyName: !Ref KeyName
+        VPC: !GetAtt VPCStack.Outputs.VPC
+        SubnetId: !GetAtt VPCStack.Outputs.SubnetId
+
+Parameters:
+  VPCName:
+    Type: 'String'
+    Default: 'MyVPC'
+  InstanceType:
+    Type: 'String'
+    Default: 't2.micro'
+  # KeyName:
+  #   Type: 'AWS::EC2::KeyPair::KeyName'
+  #   Description: 'Name of an existing EC2 KeyPair to enable SSH access to the instances'
